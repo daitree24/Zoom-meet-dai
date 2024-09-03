@@ -543,7 +543,7 @@ def fun(n, count):
         ChromeDriverManager().install()), options=options)
 
     driver.get(f'https://zoom.us/wc/join/{meet_code}')
-    wait = WebDriverWait(driver, 10)
+    wait = WebDriverWait(driver, 25)
 
     wait.until(EC.presence_of_element_located((By.ID, "input-for-name")))
     inp = driver.find_element(by='id', value='input-for-name')
@@ -566,27 +566,34 @@ def fun(n, count):
     inp2 = driver.find_element(by='id', value='input-for-pwd')
     inp2.send_keys(passcode)
 
+    wait.until(EC.presence_of_all_elements_located((By.ID, "preview-audio-control-button")))
+    audioBtn = driver.find_element(By.ID, "preview-audio-control-button")
+    audioBtn.click()
+    time.sleep(1)
+    audioBtn.click()
+    time.sleep(1)
+
     wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'preview-join-button')))
     btn3 = driver.find_element(By.CLASS_NAME, value='preview-join-button')
     btn3.click()
 
     time.sleep(2)
 
-    try:
-        notification = driver.find_element(By.CLASS_NAME, 'notification-message-wrap__layer')
-        if notification.is_displayed():
-            driver.execute_script("arguments[0].style.display = 'none';", notification)
-    except NoSuchElementException:
-        pass
+    # try:
+    #     notification = driver.find_element(By.CLASS_NAME, 'notification-message-wrap__layer')
+    #     if notification.is_displayed():
+    #         driver.execute_script("arguments[0].style.display = 'none';", notification)
+    # except NoSuchElementException:
+    #     pass
 
-    joinAudioBtn = WebDriverWait(driver, 25).until(
-        EC.element_to_be_clickable((By.CLASS_NAME, 'join-audio-by-voip__join-btn'))
-    )
-    driver.execute_script("arguments[0].scrollIntoView(true);", joinAudioBtn)
-    driver.execute_script("arguments[0].click();", joinAudioBtn)
+    # joinAudioBtn = WebDriverWait(driver, 30).until(
+    #     EC.element_to_be_clickable((By.CLASS_NAME, 'join-audio-by-voip__join-btn'))
+    # )
+    # driver.execute_script("arguments[0].scrollIntoView(true);", joinAudioBtn)
+    # driver.execute_script("arguments[0].click();", joinAudioBtn)
 
     print(Style.BRIGHT + Fore.YELLOW + f"{lis[n]}{Style. RESET_ALL}{Style.BRIGHT+Fore.GREEN} Join Done\n")
-    time.sleep(2)
+    # time.sleep(5)
 
     count += 1
     if count == len(PROXY):
@@ -600,7 +607,7 @@ for i in range(number):
     count += 1
     if count == len(PROXY):
         count = 0
-    time.sleep(5)
+    time.sleep(4)
 
 # Wait for all threads to complete
 for t in threads:
